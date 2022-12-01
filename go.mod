@@ -3,7 +3,8 @@ module github.com/openshift/client-go
 go 1.18
 
 require (
-	github.com/openshift/api v0.0.0-20221103085154-ea838af1820e
+	//github.com/openshift/api v0.0.0-20221103085154-ea838af1820e
+	github.com/openshift/api v0.0.0-20221130135655-da2a146fa1f2
 	github.com/openshift/build-machinery-go v0.0.0-20220913142420-e25cf57ea46d
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.25.0
@@ -58,6 +59,7 @@ require (
 )
 
 replace (
+	github.com/openshift/api => github.com/tremes/api-1 v0.0.0-20221130135655-da2a146fa1f2
 	k8s.io/code-generator => github.com/openshift/kubernetes-code-generator v0.0.0-20220822200235-042483082c5e
 	k8s.io/kube-openapi => github.com/openshift/kube-openapi v0.0.0-20220824163307-45d3b565d2f3
 )

@@ -10855,6 +10855,10 @@
           "x-kubernetes-list-type": "map",
           "x-kubernetes-patch-merge-key": "type",
           "x-kubernetes-patch-strategy": "merge"
+        },
+        "immutableField": {
+          "description": "immutableField is a field that is immutable once the object has been created. It is required at all times.",
+          "type": "string"
         }
       }
     },
@@ -12364,6 +12368,168 @@
       "properties": {
         "type": {
           "description": "Type determines how the image pull spec should be transformed when the image stream tag is used in deployment config triggers or new builds. The default value is `Source`, indicating the original location of the image should be used (if imported). The user may also specify `Local`, indicating that the pull spec should point to the integrated container image registry and leverage the registry's ability to proxy the pull to an upstream registry. `Local` allows the credentials used to pull this image to be managed from the image stream's namespace, so others on the platform can access a remote image but have no access to the remote secret. It also allows the image layers to be mirrored into the local registry which the images can still be pulled even if the upstream registry is unavailable.",
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "com.github.openshift.api.insights.v1alpha1.DataGather": {
+      "description": "DataGather provides data gather configuration options and status for the particular Insights data gathering.\n\nCompatibility level 4: No compatibility is provided, the API can change at any point for any reason. These capabilities should not be used by applications needing long term support.",
+      "type": "object",
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+          "type": "string"
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+        },
+        "spec": {
+          "description": "spec holds user settable values for configuration",
+          "default": {},
+          "$ref": "#/definitions/com.github.openshift.api.insights.v1alpha1.DataGatherSpec"
+        },
+        "status": {
+          "description": "status holds observed values from the cluster. They may not be overridden.",
+          "default": {},
+          "$ref": "#/definitions/com.github.openshift.api.insights.v1alpha1.DataGatherStatus"
+        }
+      }
+    },
+    "com.github.openshift.api.insights.v1alpha1.DataGatherList": {
+      "description": "DataGatherList is a collection of items\n\nCompatibility level 4: No compatibility is provided, the API can change at any point for any reason. These capabilities should not be used by applications needing long term support.",
+      "type": "object",
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/com.github.openshift.api.insights.v1alpha1.DataGather"
+          }
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+        }
+      }
+    },
+    "com.github.openshift.api.insights.v1alpha1.DataGatherSpec": {
+      "type": "object",
+      "properties": {
+        "dataPolicy": {
+          "description": "dataPolicy allows user to enable additional global obfuscation of the IP addresses and base domain in the Insights archive data. Valid values are \"None\" and \"ObfuscateNetworking\". When set to None the data is not obfuscated. When set to ObfuscateNetworking the IP addresses and the cluster domain name are obfuscated. When omitted, this means no opinion and the platform is left to choose a reasonable default, which is subject to change over time. The current default is None.",
+          "type": "string",
+          "default": ""
+        },
+        "disabledGatherers": {
+          "description": "disabledGatherers is a list of gatherers to be excluded from the gathering. All the gatherers can be disabled by providing \"all\" value. If all the gatherers are disabled, the Insights operator does not gather any data. The particular gatherers IDs can be found at https://github.com/openshift/insights-operator/blob/master/docs/gathered-data.md. Run the following command to get the names of last active gatherers: \"oc get insightsoperators.operator.openshift.io cluster -o json | jq '.status.gatherStatus.gatherers[].name'\" An example of disabling gatherers looks like this: `disabledGatherers: [\"clusterconfig/machine_configs\", \"workloads/workload_info\"]`",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    },
+    "com.github.openshift.api.insights.v1alpha1.DataGatherStatus": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "description": "conditions provide details on the status of the gatherer job.",
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
+          },
+          "x-kubernetes-list-type": "atomic"
+        },
+        "finishTime": {
+          "description": "finishTime is the time when Insights data gathering finished.",
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        },
+        "gatherers": {
+          "description": "gatherers is a list of active gatherers (and their statuses) in the last gathering.",
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/com.github.openshift.api.insights.v1alpha1.GathererStatus"
+          },
+          "x-kubernetes-list-type": "atomic"
+        },
+        "healthChecks": {
+          "description": "healthChecks provides basic information about active Insights health checks in a cluster.",
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/com.github.openshift.api.operator.v1.HealthCheck"
+          },
+          "x-kubernetes-list-type": "atomic"
+        },
+        "relatedObjects": {
+          "description": "relatedObjects is a list of resources which are useful when debugging or inspecting the data gathering Pod",
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/com.github.openshift.api.config.v1.ObjectReference"
+          }
+        },
+        "startTime": {
+          "description": "startTime is the time when Insights data gathering started.",
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        },
+        "state": {
+          "description": "state reflects the current state of the data gathering process.",
+          "type": "string"
+        }
+      }
+    },
+    "com.github.openshift.api.insights.v1alpha1.GathererStatus": {
+      "description": "gathererStatus represents information about a particular data gatherer.",
+      "type": "object",
+      "required": [
+        "conditions",
+        "name",
+        "lastGatherDuration"
+      ],
+      "properties": {
+        "conditions": {
+          "description": "conditions provide details on the status of each gatherer.",
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Condition"
+          },
+          "x-kubernetes-list-type": "atomic"
+        },
+        "lastGatherDuration": {
+          "description": "lastGatherDuration represents the time spent gathering.",
+          "default": 0,
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Duration"
+        },
+        "name": {
+          "description": "name is the name of the gatherer.",
           "type": "string",
           "default": ""
         }
@@ -25072,7 +25238,7 @@
       "type": "object",
       "properties": {
         "nodeSelector": {
-          "description": "nodeSelector is the node selector applied to ingress controller deployments.\n\nIf set, the specified selector is used and replaces the default.\n\nIf unset, the default depends on the value of the defaultPlacement field in the cluster config.openshift.io/v1/ingresses status.\n\nWhen defaultPlacement is Workers, the default is:\n\n  kubernetes.io/os: linux\n  node-role.kubernetes.io/worker: ''\n\nWhen defaultPlacement is ControlPlane, the default is:\n\n  kubernetes.io/os: linux\n  node-role.kubernetes.io/master: ''\n\nThese defaults are subject to change.",
+          "description": "nodeSelector is the node selector applied to ingress controller deployments.\n\nIf set, the specified selector is used and replaces the default.\n\nIf unset, the default depends on the value of the defaultPlacement field in the cluster config.openshift.io/v1/ingresses status.\n\nWhen defaultPlacement is Workers, the default is:\n\n  kubernetes.io/os: linux\n  node-role.kubernetes.io/worker: ''\n\nWhen defaultPlacement is ControlPlane, the default is:\n\n  kubernetes.io/os: linux\n  node-role.kubernetes.io/master: ''\n\nThese defaults are subject to change.\n\nNote that using nodeSelector.matchExpressions is not supported.  Only nodeSelector.matchLabels may be used.  This is a limitation of the Kubernetes API: the pod spec does not allow complex expressions for node selectors.",
           "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
         },
         "tolerations": {
